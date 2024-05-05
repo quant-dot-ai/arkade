@@ -5,6 +5,7 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://astroship.web3templates.com",
+  site: "https://quant-dot-ai.github.io/arkade/",
+  base: "/arkade/",
   integrations: [tailwind(), mdx(), sitemap()],
 });
