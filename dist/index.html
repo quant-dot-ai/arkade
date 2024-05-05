@@ -1,0 +1,205 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v3.6.5"><!-- <link rel="preload" as="image" href={src} alt="Hero" /> --><title>Astroship - Starter Template for Astro with Tailwind CSS</title><link rel="canonical" href="https://quant-dot-ai.github.io/arkade/"><meta name="description" content="Astroship is a starter website template for Astro built with TailwindCSS."><meta name="robots" content="index, follow"><meta property="og:title" content="Astroship - Starter Template for Astro"><meta property="og:type" content="website"><meta property="og:image" content="https://quant-dot-ai.github.io/opengraph.jpg"><meta property="og:url" content="https://quant-dot-ai.github.io/arkade/"><meta property="og:image:url" content="https://quant-dot-ai.github.io/opengraph.jpg"><meta property="og:image:alt" content="Astroship Homepage Screenshot"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@web3templates"><meta name="twitter:creator" content="@surjithctly"><link rel="stylesheet" href="/arkade/_astro/about.06ee83b4.css" /></head> <body> <div class="max-w-screen-xl mx-auto px-5">  <header class="flex flex-col lg:flex-row justify-between items-center my-5">  <div class="flex w-full lg:w-auto items-center justify-between"> <a href="/" class="text-lg"><span class="font-bold text-slate-800">Ar</span><span class="text-slate-500">kade</span> </a> <div class="block lg:hidden"> <button id="astronav-menu" aria-label="Toggle Menu">  <svg fill="currentColor" class="w-4 h-4 text-gray-800" width="24" height="24" viewBox="0 0 24 24" xmlns="https://www.w3.org/2000/svg"> <title>Toggle Menu</title> <path class="astronav-close-icon astronav-toggle hidden" fill-rule="evenodd" clip-rule="evenodd" d="M18.278 16.864a1 1 0 01-1.414 1.414l-4.829-4.828-4.828 4.828a1 1 0 01-1.414-1.414l4.828-4.829-4.828-4.828a1 1 0 011.414-1.414l4.829 4.828 4.828-4.828a1 1 0 111.414 1.414l-4.828 4.829 4.828 4.828z"></path> <path class="astronav-open-icon astronav-toggle" fill-rule="evenodd" d="M4 5h16a1 1 0 010 2H4a1 1 0 110-2zm0 6h16a1 1 0 010 2H4a1 1 0 010-2zm0 6h16a1 1 0 010 2H4a1 1 0 010-2z"></path> </svg>  </button> </div> </div> <nav class="astronav-items astronav-toggle hidden w-full lg:w-auto mt-2 lg:flex lg:mt-0">  <ul class="flex flex-col lg:flex-row lg:gap-3"> <li> <a href="/pricing" class="flex lg:px-3 py-2 items-center text-gray-600 hover:text-gray-900"> <span> Pricing</span>  </a> </li><li> <a href="/about" class="flex lg:px-3 py-2 items-center text-gray-600 hover:text-gray-900"> <span> About</span>  </a> </li><li> <a href="/blog" class="flex lg:px-3 py-2 items-center text-gray-600 hover:text-gray-900"> <span> Blog</span>  </a> </li><li> <a href="/contact" class="flex lg:px-3 py-2 items-center text-gray-600 hover:text-gray-900"> <span> Contact</span>  </a> </li> </ul> <div class="lg:hidden flex items-center mt-3 gap-4"> <a href="#" class="rounded text-center transition focus-visible:ring-2 ring-offset-2 ring-gray-200 w-full px-4 py-2 bg-gray-100 hover:bg-gray-200   border-2 border-transparent">Log in </a> <a href="#" class="rounded text-center transition focus-visible:ring-2 ring-offset-2 ring-gray-200 w-full px-4 py-2 bg-black text-white hover:bg-gray-800  border-2 border-transparent">Sign up </a> </div>  </nav>  <script>(function(){const closeOnClick = false;
+
+["DOMContentLoaded", "astro:after-swap"].forEach((event) => {
+  document.addEventListener(event, addListeners);
+});
+
+// Function to clone and replace elements
+function cloneAndReplace(element) {
+  const clone = element.cloneNode(true);
+  element.parentNode.replaceChild(clone, element);
+}
+
+function addListeners() {
+  // Clean up existing listeners
+  const oldMenuButton = document.getElementById("astronav-menu");
+  if (oldMenuButton) {
+    cloneAndReplace(oldMenuButton);
+  }
+
+  const oldDropdownMenus = document.querySelectorAll(".astronav-dropdown");
+  oldDropdownMenus.forEach((menu) => {
+    cloneAndReplace(menu);
+  });
+
+  // Mobile nav toggle
+  const menuButton = document.getElementById("astronav-menu");
+  menuButton && menuButton.addEventListener("click", toggleMobileNav);
+
+  // Dropdown menus
+  const dropdownMenus = document.querySelectorAll(".astronav-dropdown");
+  dropdownMenus.forEach((menu) => {
+    const button = menu.querySelector("button");
+    button &&
+      button.addEventListener("click", (event) =>
+        toggleDropdownMenu(event, menu, dropdownMenus)
+      );
+
+    // Handle Submenu Dropdowns
+    const dropDownSubmenus = menu.querySelectorAll(
+      ".astronav-dropdown-submenu"
+    );
+
+    dropDownSubmenus.forEach((submenu) => {
+      const submenuButton = submenu.querySelector("button");
+      submenuButton &&
+        submenuButton.addEventListener("click", (event) => {
+          event.stopImmediatePropagation();
+          toggleSubmenuDropdown(event, submenu);
+        });
+    });
+  });
+
+  // Clicking away from dropdown will remove the dropdown class
+  document.addEventListener("click", closeAllDropdowns);
+
+  if (closeOnClick) {
+    handleCloseOnClick();
+  }
+}
+
+function toggleMobileNav() {
+  [...document.querySelectorAll(".astronav-toggle")].forEach((el) => {
+    el.classList.toggle("hidden");
+  });
+}
+
+function toggleDropdownMenu(event, menu, dropdownMenus) {
+  toggleMenu(menu);
+
+  // Close one dropdown when selecting another
+  Array.from(dropdownMenus)
+    .filter((el) => el !== menu && !menu.contains(el))
+    .forEach(closeMenu);
+
+  event.stopPropagation();
+}
+
+function toggleSubmenuDropdown(event, submenu) {
+  event.stopPropagation();
+  toggleMenu(submenu);
+
+  // Close sibling submenus at the same nesting level
+  const siblingSubmenus = submenu
+    .closest(".astronav-dropdown")
+    .querySelectorAll(".astronav-dropdown-submenu");
+  Array.from(siblingSubmenus)
+    .filter((el) => el !== submenu && !submenu.contains(el))
+    .forEach(closeMenu);
+}
+
+function closeAllDropdowns(event) {
+  const dropdownMenus = document.querySelectorAll(".dropdown-toggle");
+  const dropdownParent = document.querySelectorAll(
+    ".astronav-dropdown, .astronav-dropdown-submenu"
+  );
+  const isButtonInsideDropdown = [
+    ...document.querySelectorAll(
+      ".astronav-dropdown button, .astronav-dropdown-submenu button, #astronav-menu"
+    ),
+  ].some((button) => button.contains(event.target));
+  if (!isButtonInsideDropdown) {
+    dropdownMenus.forEach((d) => {
+      // console.log("I ran", d);
+      // if (!d.contains(event.target)) {
+      d.classList.remove("open");
+      d.removeAttribute("open");
+      d.classList.add("hidden");
+      // }
+    });
+    dropdownParent.forEach((d) => {
+      d.classList.remove("open");
+      d.removeAttribute("open");
+      d.setAttribute("aria-expanded", "false");
+    });
+  }
+}
+
+function toggleMenu(menu) {
+  menu.classList.toggle("open");
+  const expanded = menu.getAttribute("aria-expanded") === "true";
+  menu.setAttribute("aria-expanded", expanded ? "false" : "true");
+  menu.hasAttribute("open")
+    ? menu.removeAttribute("open")
+    : menu.setAttribute("open", "");
+
+  const dropdownToggle = menu.querySelector(".dropdown-toggle");
+  const dropdownExpanded = dropdownToggle.getAttribute("aria-expanded");
+  dropdownToggle.classList.toggle("hidden");
+  dropdownToggle.setAttribute(
+    "aria-expanded",
+    dropdownExpanded === "true" ? "false" : "true"
+  );
+}
+
+function closeMenu(menu) {
+  // console.log("closing", menu);
+  menu.classList.remove("open");
+  menu.removeAttribute("open");
+  menu.setAttribute("aria-expanded", "false");
+  const dropdownToggles = menu.querySelectorAll(".dropdown-toggle");
+  dropdownToggles.forEach((toggle) => {
+    toggle.classList.add("hidden");
+    toggle.setAttribute("aria-expanded", "false");
+  });
+}
+
+function handleCloseOnClick() {
+  const navMenuItems = document.querySelector(".astronav-items");
+  const navToggle = document.getElementById("astronav-menu");
+  const navLink = navMenuItems && navMenuItems.querySelectorAll("a");
+
+  const MenuIcons = navToggle.querySelectorAll(".astronav-toggle");
+
+  navLink &&
+    navLink.forEach((item) => {
+      item.addEventListener("click", () => {
+        navMenuItems?.classList.add("hidden");
+        MenuIcons.forEach((el) => {
+          el.classList.toggle("hidden");
+        });
+      });
+    });
+}
+})();</script> <div> <div class="hidden lg:flex items-center gap-4"> <!-- <a href="#">Log in</a>
+        <Link href="#" size="md">Sign up</Link> --> </div> </div> </header>  </div>  <div class="max-w-screen-xl mx-auto px-5">  <main class="grid lg:grid-cols-2 place-items-center pt-16 pb-8 md:pt-12 md:pb-24"> <div class="py-6 md:order-1 hidden md:block"> <picture> <source srcset="/arkade/_astro/hero.6fdd0dc6_1BDBf.webp 200w, /arkade/_astro/hero.6fdd0dc6_27NHSA.webp 400w, /arkade/_astro/hero.6fdd0dc6_OhH7i.webp 600w" type="image/webp" sizes="(max-width: 800px) 100vw, 620px"> <img src="/arkade/_astro/hero.6fdd0dc6_23RU4M.png" srcset="/arkade/_astro/hero.6fdd0dc6_6UTpi.png 200w, /arkade/_astro/hero.6fdd0dc6_2d7XGD.png 400w, /arkade/_astro/hero.6fdd0dc6_23RU4M.png 600w" alt="Astronaut in the air" sizes="(max-width: 800px) 100vw, 620px" loading="eager" width="520" height="424" decoding="async"> </picture> </div> <div> <h1 class="text-5xl lg:text-6xl xl:text-7xl font-bold lg:tracking-tight xl:tracking-tighter">
+Level Up! <!--<img src="src/assets/taffy-taffy-coin.gif" alt="Gold Coin" style="width: 30px; height: 30px;"> --> <br>
+Your marketing.
+</h1> <p class="text-lg mt-4 text-slate-600 max-w-xl">
+Astroship is a starter template for startups, marketing websites & landing
+      pages.<wbr> Built with Astro.build and TailwindCSS. You can quickly
+      create any website with this starter.
+</p> <div class="mt-6 flex flex-col sm:flex-row gap-3"> <a href="https://www.instagram.com/madebyarkade?igsh=MXM0dGl5aDV0bW9jYw==" target="_blank" rel="noopener" class="rounded text-center transition focus-visible:ring-2 ring-offset-2 ring-gray-200 px-5 py-2.5 bg-black text-white hover:bg-gray-800  border-2 border-transparent flex gap-1 items-center justify-center"> <svg viewBox="0 0 24 24" class="text-white w-5 h-5" astro-icon="mdi:instagram"><path fill="currentColor" d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+Our work
+ </a> <a href="https://github.com/surjithctly/astroship" rel="noopener" target="_blank" class="rounded text-center transition focus-visible:ring-2 ring-offset-2 ring-gray-200 px-5 py-2.5 bg-white border-2 border-black hover:bg-gray-100 text-black  flex gap-1 items-center justify-center"> <svg viewBox="0 0 24 24" class="text-black w-4 h-4" astro-icon="ri:drive-fill"><path fill="currentColor" d="m7.94 4.146 3.482 6.03-5.94 10.293L2 14.44 7.94 4.146zm2.176 10.294H22l-3.482 6.029H6.635l3.481-6.029zm4.343-1L8.518 3.145h6.964l5.94 10.295H14.46z"/></svg>
+All Work
+ </a> </div> </div> </main> <div class="mt-16 md:mt-0"> <h2 class="text-4xl lg:text-5xl font-bold lg:tracking-tight">
+Videos so nice, you'll watch them thrice. 👀
+</h2> <p class="text-lg mt-4 text-slate-600">
+Arkade comes batteries included. We take the best parts of state-of-the-art design and data principles 
+    and add our own innovations.
+</p> </div> <div class="grid sm:grid-cols-2 md:grid-cols-3 mt-16 gap-16"> <div class="flex gap-4 items-start"> <div class="mt-1 bg-black rounded-full  p-2 w-8 h-8 shrink-0"> <svg viewBox="0 0 24 24" class="text-white" astro-icon="bx:bxs-briefcase"><path fill="currentColor" d="M20 6h-3V4c0-1.103-.897-2-2-2H9c-1.103 0-2 .897-2 2v2H4c-1.103 0-2 .897-2 2v3h20V8c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm5 10h-4v-2H2v7c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2v-7h-8v2z"/></svg> </div> <div> <h3 class="font-semibold text-lg">Bring Your Own Framework</h3>  <p class="text-slate-500 mt-2 leading-relaxed">Build your site using React, Svelte, Vue, Preact, web components, or just plain ol&#39; HTML + JavaScript.</p> </div> </div><div class="flex gap-4 items-start"> <div class="mt-1 bg-black rounded-full  p-2 w-8 h-8 shrink-0"> <svg viewBox="0 0 24 24" class="text-white" astro-icon="bx:bxs-window-alt"><path fill="currentColor" d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zm-3 3h2v2h-2V6zm-3 0h2v2h-2V6zM4 19v-9h16.001l.001 9H4z"/></svg> </div> <div> <h3 class="font-semibold text-lg">100% Static HTML, No JS</h3>  <p class="text-slate-500 mt-2 leading-relaxed">Astro renders your entire page to static HTML, removing all JavaScript from your final build by default.</p> </div> </div><div class="flex gap-4 items-start"> <div class="mt-1 bg-black rounded-full  p-2 w-8 h-8 shrink-0"> <svg viewBox="0 0 24 24" class="text-white" astro-icon="bx:bxs-data"><path fill="currentColor" d="M20 6c0-2.168-3.663-4-8-4S4 3.832 4 6v2c0 2.168 3.663 4 8 4s8-1.832 8-4V6zm-8 13c-4.337 0-8-1.832-8-4v3c0 2.168 3.663 4 8 4s8-1.832 8-4v-3c0 2.168-3.663 4-8 4z"/><path fill="currentColor" d="M20 10c0 2.168-3.663 4-8 4s-8-1.832-8-4v3c0 2.168 3.663 4 8 4s8-1.832 8-4v-3z"/></svg> </div> <div> <h3 class="font-semibold text-lg">On-Demand Components</h3>  <p class="text-slate-500 mt-2 leading-relaxed">Need some JS? Astro can automatically hydrate interactive components when they become visible on the page.  </p> </div> </div><div class="flex gap-4 items-start"> <div class="mt-1 bg-black rounded-full  p-2 w-8 h-8 shrink-0"> <svg viewBox="0 0 24 24" class="text-white" astro-icon="bx:bxs-bot"><path fill="currentColor" d="M21 10.975V8a2 2 0 0 0-2-2h-6V4.688c.305-.274.5-.668.5-1.11a1.5 1.5 0 0 0-3 0c0 .442.195.836.5 1.11V6H5a2 2 0 0 0-2 2v2.998l-.072.005A.999.999 0 0 0 2 12v2a1 1 0 0 0 1 1v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a1 1 0 0 0 1-1v-1.938a1.004 1.004 0 0 0-.072-.455c-.202-.488-.635-.605-.928-.632zM7 12c0-1.104.672-2 1.5-2s1.5.896 1.5 2-.672 2-1.5 2S7 13.104 7 12zm8.998 6c-1.001-.003-7.997 0-7.998 0v-2s7.001-.002 8.002 0l-.004 2zm-.498-4c-.828 0-1.5-.896-1.5-2s.672-2 1.5-2 1.5.896 1.5 2-.672 2-1.5 2z"/></svg> </div> <div> <h3 class="font-semibold text-lg">Broad Integration</h3>  <p class="text-slate-500 mt-2 leading-relaxed">Astro supports TypeScript, Scoped CSS, CSS Modules, Sass, Tailwind, Markdown, MDX, and any other npm packages.</p> </div> </div><div class="flex gap-4 items-start"> <div class="mt-1 bg-black rounded-full  p-2 w-8 h-8 shrink-0"> <svg viewBox="0 0 24 24" class="text-white" astro-icon="bx:bxs-file-find"><path fill="currentColor" d="M6 22h12c.178 0 .348-.03.512-.074l-3.759-3.759A4.966 4.966 0 0 1 12 19c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5a4.964 4.964 0 0 1-.833 2.753l3.759 3.759c.044-.164.074-.334.074-.512V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2z"/><circle cx="12" cy="14" r="3" fill="currentColor"/></svg> </div> <div> <h3 class="font-semibold text-lg">SEO Enabled</h3>  <p class="text-slate-500 mt-2 leading-relaxed">Automatic sitemaps, RSS feeds, pagination and collections take the pain out of SEO and syndication. It just works!</p> </div> </div><div class="flex gap-4 items-start"> <div class="mt-1 bg-black rounded-full  p-2 w-8 h-8 shrink-0"> <svg viewBox="0 0 24 24" class="text-white" astro-icon="bx:bxs-user"><path fill="currentColor" d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2 7.5 4.019 7.5 6.5zM20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h17z"/></svg> </div> <div> <h3 class="font-semibold text-lg">Community</h3>  <p class="text-slate-500 mt-2 leading-relaxed">Astro is an open source project powered by hundreds of contributors making thousands of individual contributions.</p> </div> </div> </div> <div class="video-container mx-auto max-w-full mt-8 flex justify-between"> <video class="w-full md:w-1/3 px-1" autoplay muted loop> <source src="src/assets/homepage_loop_1.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video> <video class="w-full md:w-1/3 px-1" autoplay muted loop> <source src="src/assets/homepage_loop_2.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video> <video class="w-full md:w-1/3 px-1" autoplay muted loop> <source src="src/assets/homepage_loop_3.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video> </div>  <div class="bg-black p-8 md:px-20 md:py-20 mt-20 mx-auto max-w-5xl rounded-lg flex flex-col items-center text-center"> <h2 class="text-white text-4xl md:text-6xl tracking-tight">
+Level Up with us.
+</h2> <p class="text-slate-400 mt-4 text-lg md:text-xl">
+Videos speak louder than words. We will make sure your brands get the attention they deserve.
+</p> <div class="flex mt-5"> <a href="/contact" class="rounded text-center transition focus-visible:ring-2 ring-offset-2 ring-gray-200 px-5 py-2.5 bg-white text-black   border-2 border-transparent">Get Started </a> </div> </div>  </div>  <footer class="my-20"> <p class="text-center text-sm text-slate-500">
+Copyright © 2024 Arkade. All rights reserved.
+</p> <!--
+    Can we ask you a favor 🙏
+    Please keep this backlink on your website if possible.
+    or Purchase a commercial license from https://web3templates.com
+  --> <!-- <p class="text-center text-xs text-slate-500 mt-1">
+    Made by <a
+      href="https://web3templates.com"
+      target="_blank"
+      rel="noopener"
+      class="hover:underline">
+      Web3Templates
+    </a>
+  </p> --> </footer>  </body> </html>
